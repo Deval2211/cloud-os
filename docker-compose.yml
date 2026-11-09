@@ -1,0 +1,207 @@
+version: '3.8'
+
+services:
+  # ==============================================================================
+  # PostgreSQL Database
+  # ==============================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: cloud-os-postgres
+    environment:
+      POSTGRES_DB: cloud_os
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cloud-os-network
+
+  # ==============================================================================
+  # Redis Cache & Message Broker
+  # ==============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: cloud-os-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cloud-os-network
+
+  # ==============================================================================
+  # MinIO S3-Compatible Storage
+  # ==============================================================================
+  minio:
+    image: minio/minio:latest
+    container_name: cloud-os-minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cloud-os-network
+
+  # ==============================================================================
+  # FastAPI Backend
+  # ==============================================================================
+  backend:
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile
+    container_name: cloud-os-backend
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/cloud_os
+      REDIS_URL: redis://redis:6379
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      DEBUG: "true"
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    command: |
+      sh -c "alembic upgrade head && 
+             uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - ./src/backend:/app
+    networks:
+      - cloud-os-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==============================================================================
+  # Celery Worker (Background Tasks)
+  # ==============================================================================
+  celery-worker:
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile
+    container_name: cloud-os-celery-worker
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/cloud_os
+      REDIS_URL: redis://redis:6379
+      MINIO_ENDPOINT: minio:9000
+      ENVIRONMENT: development
+    depends_on:
+      - redis
+      - postgres
+    command: celery -A tasks worker -l info --concurrency=4
+    volumes:
+      - ./src/backend:/app
+    networks:
+      - cloud-os-network
+
+  # ==============================================================================
+  # Next.js Frontend
+  # ==============================================================================
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile.dev
+    container_name: cloud-os-frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_APP_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./src/frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    networks:
+      - cloud-os-network
+
+  # ==============================================================================
+  # Prometheus Metrics Collection
+  # ==============================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cloud-os-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - cloud-os-network
+
+  # ==============================================================================
+  # Grafana Dashboard
+  # ==============================================================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: cloud-os-grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_USER: admin
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+    networks:
+      - cloud-os-network
+
+# ==============================================================================
+# Volumes
+# ==============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+# ==============================================================================
+# Networks
+# ==============================================================================
+networks:
+  cloud-os-network:
+    driver: bridge

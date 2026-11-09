@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==============================================================================
+   Global Styles for Cloud OS
+   ============================================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0c3d66 0%, #1a1a2e 50%, #16213e 100%);
+  color: #e5e7eb;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+body {
+  background-attachment: fixed;
+  position: relative;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.8);
+}
+
+/* Selection styling */
+::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+  color: #e5e7eb;
+}
+
+/* ==============================================================================
+   Component Styles
+   ============================================================================== */
+
+/* Window Manager */
+.window {
+  @apply rounded-lg bg-dark-800 border border-dark-700 shadow-lg overflow-hidden;
+}
+
+.window-header {
+  @apply bg-dark-900 px-lg py-sm flex items-center justify-between border-b border-dark-700;
+  user-select: none;
+}
+
+.window-title {
+  @apply font-semibold text-dark-100 truncate;
+}
+
+.window-controls {
+  @apply flex gap-xs;
+}
+
+.window-button {
+  @apply w-6 h-6 rounded flex items-center justify-center hover:bg-dark-700 transition-colors;
+}
+
+.window-content {
+  @apply p-lg overflow-auto;
+}
+
+/* Desktop Grid */
+.desktop-grid {
+  @apply grid grid-cols-12 gap-sm p-sm h-full;
+}
+
+/* Taskbar */
+.taskbar {
+  @apply fixed bottom-0 left-0 right-0 bg-dark-900 border-t border-dark-700 px-lg py-sm flex items-center gap-md h-16;
+}
+
+.taskbar-item {
+  @apply px-md py-sm rounded bg-dark-800 hover:bg-dark-700 cursor-pointer transition-colors flex items-center gap-sm;
+}
+
+/* Button Styles */
+.btn {
+  @apply px-md py-sm rounded font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-primary {
+  @apply bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800;
+}
+
+.btn-secondary {
+  @apply bg-dark-700 text-dark-100 hover:bg-dark-600 active:bg-dark-500;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700 active:bg-red-800;
+}
+
+/* Input Styles */
+.input {
+  @apply w-full px-md py-sm rounded bg-dark-800 border border-dark-700 text-dark-100 placeholder-dark-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all;
+}
+
+.input:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Badge Styles */
+.badge {
+  @apply inline-block px-sm py-xs rounded-full text-xs font-semibold;
+}
+
+.badge-primary {
+  @apply bg-brand-900 text-brand-300;
+}
+
+.badge-success {
+  @apply bg-green-900 text-green-300;
+}
+
+.badge-warning {
+  @apply bg-yellow-900 text-yellow-300;
+}
+
+.badge-error {
+  @apply bg-red-900 text-red-300;
+}
+
+/* Loading Spinner */
+.spinner {
+  @apply inline-block animate-spin;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* ==============================================================================
+   Responsive Utilities
+   ============================================================================== */
+
+@media (max-width: 768px) {
+  .desktop-grid {
+    @apply grid-cols-1;
+  }
+
+  .window {
+    @apply !rounded-none;
+  }
+}

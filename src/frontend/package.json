@@ -1,0 +1,51 @@
+{
+  "name": "cloud-os-frontend",
+  "version": "0.1.0",
+  "description": "Cloud OS - Browser-based operating system for AI development",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,md}\""
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zustand": "^4.4.7",
+    "framer-motion": "^10.16.16",
+    "tailwindcss": "^3.3.6",
+    "socket.io-client": "^4.7.2",
+    "axios": "^1.6.2",
+    "react-query": "^3.39.3",
+    "typescript": "^5.3.3",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@types/node": "^20.10.6",
+    "xterm": "^5.3.0",
+    "xterm-addon-fit": "^0.8.0",
+    "monaco-editor": "^0.50.0",
+    "react-icons": "^4.13.0",
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.1.1",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "eslint": "^8.55.0",
+    "eslint-config-next": "^14.0.0",
+    "jest": "^29.7.0",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.1.5",
+    "ts-jest": "^29.1.1",
+    "postcss": "^8.4.32",
+    "autoprefixer": "^10.4.16"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

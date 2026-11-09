@@ -1,0 +1,3 @@
+/home/deval/Projects/cloud_os/src/frontend/src/stores/websocketStore.ts
+/home/deval/Projects/cloud_os/src/frontend/src/stores/authStore.ts
+/home/deval/Projects/cloud_os/src/frontend/src/stores/sessionStore.ts

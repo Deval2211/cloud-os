@@ -1,0 +1,50 @@
+                    GNU AFFERO GENERAL PUBLIC LICENSE
+                       Version 3, 19 November 2007
+
+ Copyright (C) 2023-2024 Cloud OS Contributors
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+For the full legal text of the AGPL-3.0 license, please visit:
+https://www.gnu.org/licenses/agpl-3.0.html
+
+==============================================================================
+
+SUMMARY OF THE AGPL-3.0 LICENSE:
+
+1. FREEDOM TO USE: You can use, modify, and distribute this software freely.
+
+2. COPYLEFT: If you modify this software and offer it as a service (e.g., via
+   a web application), you MUST:
+   - Disclose the source code
+   - Make it available under the same AGPL-3.0 license
+   - This applies even if you're not distributing the software directly
+
+3. ATTRIBUTION: You must include a copy of this license and provide proper
+   attribution to the original authors.
+
+4. NO WARRANTY: This software is provided "as-is" without any warranty.
+
+5. LIABILITY: The authors are not liable for any damages caused by this
+   software.
+
+KEY DIFFERENCE FROM GPL:
+The AGPL extends GPL's copyleft requirements to cover network use. If you
+run modified versions of this program on a web server that users access
+remotely, you must provide those users with access to the source code.
+
+==============================================================================
+
+For more information, contact the project maintainers or visit:
+https://github.com/yourusername/cloud-os
